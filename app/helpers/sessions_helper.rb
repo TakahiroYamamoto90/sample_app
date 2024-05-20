@@ -15,5 +15,11 @@ module SessionsHelper
   # ユーザーがログインしていればtrue、その他ならfalseを返す
   def logged_in?
     !current_user.nil?
+  end
+
+  # 現在のユーザーをログアウトする
+  def log_out
+    reset_session
+    @current_user = nil   # 安全のため
   end  
 end
