@@ -24,6 +24,7 @@ module SessionsHelper
       @current_user ||= User.find_by(id: user_id)
     # WEBリクエスト処理内でセッションが存在しない場合で、永続cookieが存在する場合
     elsif (user_id = cookies.encrypted[:user_id])
+      #raise       # テストがパスすれば、この部分がテストされていないことがわかる
       user = User.find_by(id: user_id)
       # 永続cookie上の:remember_tokenの値を取得して、DB上のremember_digestを復号化したもの=remember_tokenと一致するか確認する
       if user && user.authenticated?(cookies[:remember_token])
