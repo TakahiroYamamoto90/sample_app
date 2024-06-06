@@ -3,7 +3,7 @@ require "test_helper"
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = User.new(name: "Example User", email: "user@example.com",
-                     password: "foobar", password_confirmation: "foobar")
+                     password: "foobar123", password_confirmation: "foobar123")
   end
   
   #test "should be valid" do
@@ -67,5 +67,13 @@ class UserTest < ActiveSupport::TestCase
     # 対象digest切り替え方式に変更
     #assert_not @user.authenticated?('')
     assert_not @user.authenticated?(:remember, '')
+  end
+
+  test "associated microposts should be destroyed" do
+    @user.save
+    @user.microposts.create!(content: "Lorem ipsum")
+    assert_difference 'Micropost.count', -1 do
+      @user.destroy
+    end
   end  
 end
