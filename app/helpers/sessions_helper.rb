@@ -33,7 +33,9 @@ module SessionsHelper
       #raise       # テストがパスすれば、この部分がテストされていないことがわかる
       user = User.find_by(id: user_id)
       # 永続cookie上の:remember_tokenの値を取得して、DB上のremember_digestを復号化したもの=remember_tokenと一致するか確認する
-      if user && user.authenticated?(cookies[:remember_token])
+      # 対象digest切り替え方式に変更
+      #if user && user.authenticated?(cookies[:remember_token])
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user
       end
