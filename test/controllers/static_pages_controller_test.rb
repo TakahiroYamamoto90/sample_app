@@ -5,10 +5,24 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   #  get root_url
   #  assert_response :success
   #end
+
+  # 14章でのテストで追加
+  def setup
+    @user = users(:michael)
+  end
+
   test "should get home" do
     get root_path
     assert_response :success
     assert_select "title", "Ruby on Rails Tutorial Sample App"
+    # フォロー機能で追加
+    log_in_as(@user)
+    get root_path
+    assert_response :success
+    assert_select "a[href=?]", following_user_path(@user) #ログインしないと情報が取れない
+    assert_select "a[href=?]", followers_user_path(@user) #ログインしないと情報が取れない
+    assert_match @user.following.count.to_s, response.body
+    assert_match @user.followers.count.to_s, response.body
   end
 
   test "should get help" do
