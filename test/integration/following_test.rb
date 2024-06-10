@@ -73,4 +73,11 @@ class UnfollowTest < Unfollow
       delete relationship_path(@relationship, format: :turbo_stream)
     end
   end
+
+  test "feed on Home page" do
+    get root_path
+    @user.feed.paginate(page: 1).each do |micropost|
+      assert_match CGI.escapeHTML(micropost.user.name), response.body
+    end
+  end  
 end
