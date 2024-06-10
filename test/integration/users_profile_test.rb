@@ -14,8 +14,10 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
     assert_select 'h1', text: @user.name
     assert_select 'h1>img.gravatar'
     assert_match @user.microposts.count.to_s, response.body
-    assert_select 'div.pagination', count: 1
-    @user.microposts.paginate(page: 1).each do |micropost|
+    assert_select 'ul.pagination', count: 1
+    # 2024.06.10 kaminari対応
+    #@user.microposts.paginate(page: 1).each do |micropost|
+    @user.microposts.page(1).each do |micropost|
       assert_match micropost.content, response.body
     end
     # フォロー機能で追加

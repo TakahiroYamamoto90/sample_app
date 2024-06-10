@@ -76,7 +76,9 @@ class UnfollowTest < Unfollow
 
   test "feed on Home page" do
     get root_path
-    @user.feed.paginate(page: 1).each do |micropost|
+    # 2024.06.10 kaminari対応
+    #@user.feed.paginate(page: 1).each do |micropost|
+    @user.feed.page(1).each do |micropost|
       assert_match CGI.escapeHTML(micropost.user.name), response.body
     end
   end  
