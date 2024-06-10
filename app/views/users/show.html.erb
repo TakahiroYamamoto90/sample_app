@@ -14,7 +14,8 @@
   <div class="col-md-8">
     <%= render 'follow_form' if logged_in? %>  
     <% if @user.microposts.any? %>
-      <h3>Microposts (<%= @user.microposts.count %>)</h3>
+      <h3>Microposts ( <%= @microposts.count %> / <%= @user.microposts.count %> )</h3>
+      <%= render 'shared/microposts_search_form' %>      
       <ol class="microposts">
         <%= render @microposts %>
       </ol>

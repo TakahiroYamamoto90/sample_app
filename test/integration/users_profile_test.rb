@@ -5,6 +5,7 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
 
   def setup
     @user = users(:michael)
+    @other_user = users(:archer)
   end
 
   test "profile display" do
@@ -25,5 +26,21 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", followers_user_path(@user)
     assert_match @user.following.count.to_s, response.body
     assert_match @user.followers.count.to_s, response.body
+
+    # Micropost Search
+    get user_path(@user), params: {q: {content_cont: "フランス"}}
+    q = @user.microposts.ransack(content_cont: "フランス")
+    q.result.page(1).each do |micropost|
+      assert_match micropost.content, response.body
+    end    
   end
+
+  test "home profile display" do
+    # Micropost Search
+    get root_path, params: {q: {content_cont: "フランス"}}
+    q = @user.feed.ransack(content_cont: "フランス")
+    q.result.page(1).each do |micropost|
+      assert_match micropost.content, response.body
+    end
+  end  
 end

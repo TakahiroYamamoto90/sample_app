@@ -145,6 +145,16 @@ class User < ApplicationRecord
   # 現在のユーザーが他のユーザーをフォローしていればtrueを返す
   def following?(other_user)
     following.include?(other_user)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    # nameとemailは検索OKとする
+    auth_object ? super : %w(name email)
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    # 関連先のモデルを検索する必要がなければ空の配列を返す
+    auth_object ? super : []
   end  
 
   private
