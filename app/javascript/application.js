@@ -3,3 +3,6 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "custom/menu"
 import "custom/image_upload"
+//import "../../assets/stylesheets/micropost_dialog.css" // 2024.06.11 add modal dialog
+//= require jquery.js
+//= require jquery_ujs

@@ -1,6 +1,18 @@
 class MicropostsController < ApplicationController
-  before_action :logged_in_user, only: [:create, :destroy]
+  before_action :logged_in_user, only: [:show, :create, :destroy]
   before_action :correct_user,   only: :destroy
+
+  # 2024.06.11 add modal dialog
+  # micropost.showがルーターから呼ばれる
+  def show
+    @micropost = Micropost.find(params[:id])
+    #respond_to do |format|
+    #  #format.html
+    #  # link_toメソッドをremote: trueに設定したのでリクエストはjs形式で行われる
+    #  format.js  # js形式で送信された場合はこちらが適応され、js.erbを探す
+    #end
+    #respond_to :html, :js  
+  end
 
   def create
     @micropost = current_user.microposts.build(micropost_params)

@@ -20,8 +20,9 @@ gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.8"
 gem "bootsnap",        "1.16.0", require: false
 gem "sqlite3",         "1.6.1"
-gem "kaminari"
-gem "ransack"
+gem "kaminari" # ページングの代替ソリューション
+gem "ransack" # シンプルな検索
+gem 'jquery-rails' # rails標準のajaxのために試みたがNG。turbo-railsを使えということ？
 
 group :development, :test do
   gem "debug",   "1.7.1", platforms: %i[ mri mingw x64_mingw ]
