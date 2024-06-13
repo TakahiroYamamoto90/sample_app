@@ -23,6 +23,8 @@ gem "sqlite3",         "1.6.1"
 gem "kaminari" # ページングの代替ソリューション
 gem "ransack" # シンプルな検索
 gem 'jquery-rails' # rails標準のajaxのために試みたがNG。turbo-railsを使えということ？
+gem 'dotenv-rails' # gemini-aiのAPI_KEYを設定したいため
+gem 'gemini-ai'
 
 group :development, :test do
   gem "debug",   "1.7.1", platforms: %i[ mri mingw x64_mingw ]

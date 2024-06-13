@@ -25,7 +25,8 @@ Rails.application.routes.draw do
   #    post :show
   #  end
   #end
-  resources :microposts,          only: [:show, :create, :destroy]
+  #post "/microposts/*", to: "microposts#show", format: "js"
+  resources :microposts,          only: [:show, :create, :destroy] # :showを付けないとmicropost/xxxを表示するshowメソッドが呼ばれない
   resources :relationships,       only: [:create, :destroy]
   resources :password_resets,     only: [:new, :create, :edit, :update]
   get '/microposts', to: 'static_pages#home'

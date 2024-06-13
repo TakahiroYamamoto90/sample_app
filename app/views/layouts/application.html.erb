@@ -9,7 +9,10 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <!-- javascript_importmap_tagsかどちらかを選ばないと 
+    javascript consoleでHotwire Rails - Cannot use import statement outside a module のエラーが発生する
     <%= javascript_include_tag :application %>
+    -->
   </head>
   <body>
     <%= render 'layouts/header' %>

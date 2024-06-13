@@ -1,3 +1,6 @@
+# 2024.06.14 gemini-ai対応
+require 'gemini-ai'
+
 class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:show, :create, :destroy]
   before_action :correct_user,   only: :destroy
@@ -6,11 +9,20 @@ class MicropostsController < ApplicationController
   # micropost.showがルーターから呼ばれる
   def show
     @micropost = Micropost.find(params[:id])
-    #respond_to do |format|
-    #  format.html
-    #  # link_toメソッドをremote: trueに設定したのでリクエストはjs形式で行われる
-    #  format.js  # js形式で送信された場合はこちらが適応され、js.erbを探す
-    #end
+
+    client = Gemini.new(
+      credentials: {
+        service: 'generative-language-api',
+        api_key: ENV['GOOGLE_API_KEY']
+      },
+      options: { model: 'gemini-pro', server_sent_events: true }
+    )
+
+    respond_to do |format|
+      format.html
+      # link_toメソッドをremote: trueに設定したのでリクエストはjs形式で行われる
+      format.js  # js形式で送信された場合はこちらが適応され、js.erbを探す
+    end
     #respond_to :html, :js  
   end
 

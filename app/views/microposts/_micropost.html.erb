@@ -13,7 +13,7 @@
       <%= link_to "delete", micropost, data: { "turbo-method": :delete,
                                                turbo_confirm: "You sure?" } %>
     <% else %>
-      <%= link_to micropost, remote: true do %>
+      <%= link_to micropost, remote: true, data: { "turbo-method": :get } do %>
         Query to Generative AI
       <% end %>
     <% end %>

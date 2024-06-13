@@ -4,5 +4,6 @@ import "controllers"
 import "custom/menu"
 import "custom/image_upload"
 //import "../../assets/stylesheets/micropost_dialog.css" // 2024.06.11 add modal dialog
-//= require jquery.js
-//= require jquery_ujs
+
+import jquery from "jquery"
+window.$ = jquery // TODO:micropost/xxxをリロードすると、ReferenceError: $ is not defined が発生するのが課題
