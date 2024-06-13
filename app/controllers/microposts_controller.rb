@@ -7,7 +7,7 @@ class MicropostsController < ApplicationController
   def show
     @micropost = Micropost.find(params[:id])
     #respond_to do |format|
-    #  #format.html
+    #  format.html
     #  # link_toメソッドをremote: trueに設定したのでリクエストはjs形式で行われる
     #  format.js  # js形式で送信された場合はこちらが適応され、js.erbを探す
     #end

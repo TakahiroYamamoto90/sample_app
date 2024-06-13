@@ -135,11 +135,17 @@ class User < ApplicationRecord
   # ユーザーをフォローする
   def follow(other_user)
     following << other_user unless self == other_user
+    if other_user.follow_notification
+      Relationship.send_follow_email(other_user, self)
+    end
   end
 
   # ユーザーをフォロー解除する
   def unfollow(other_user)
     following.delete(other_user)
+    if other_user.follow_notification
+      Relationship.send_unfollow_email(other_user, self)
+    end
   end
 
   # 現在のユーザーが他のユーザーをフォローしていればtrueを返す
