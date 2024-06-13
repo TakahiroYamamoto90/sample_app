@@ -98,7 +98,8 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation)#, :admin)
+                                   :password_confirmation,
+                                   :follow_notification)#, :admin)
     end
 
     # 親のapplication_controllerに移動

@@ -14,7 +14,8 @@ michael:
   password_digest: <%= User.digest('password') %>
   admin: true
   activated: true
-  activated_at: <%= Time.zone.now %>  
+  activated_at: <%= Time.zone.now %>
+  follow_notification: false    
 
 archer:
   name: Sterling Archer
@@ -22,6 +23,7 @@ archer:
   password_digest: <%= User.digest('password') %>
   activated: true
   activated_at: <%= Time.zone.now %>  
+  follow_notification: true
 
 lana:
   name: Lana Kane
@@ -29,13 +31,39 @@ lana:
   password_digest: <%= User.digest('password') %>
   activated: true
   activated_at: <%= Time.zone.now %>  
+  follow_notification: false  
 
 malory:
   name: Malory Archer
   email: boss@example.gov
   password_digest: <%= User.digest('password') %>
   activated: true
-  activated_at: <%= Time.zone.now %>  
+  activated_at: <%= Time.zone.now %>
+  follow_notification: false
+
+malory2:
+  name: Malory Archer
+  email: malory2@example.gov
+  password_digest: <%= User.digest('password') %>
+  activated: true
+  activated_at: <%= Time.zone.now %>
+  follow_notification: false
+
+malory3:
+  name: Malory Archer
+  email: malory3@example.gov
+  password_digest: <%= User.digest('password') %>
+  activated: true
+  activated_at: <%= Time.zone.now %>
+  follow_notification: false
+
+malory4:
+  name: Malory Archer
+  email: malory4@example.gov
+  password_digest: <%= User.digest('password') %>
+  activated: true
+  activated_at: <%= Time.zone.now %>
+  follow_notification: false    
 
 inactive:
   name: Inactive User

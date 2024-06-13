@@ -12,6 +12,10 @@
     <% if current_user?(micropost.user) %>
       <%= link_to "delete", micropost, data: { "turbo-method": :delete,
                                                turbo_confirm: "You sure?" } %>
-    <% end %>    
+    <% else %>
+      <%= link_to micropost, remote: true do %>
+        Query to Generative AI
+      <% end %>
+    <% end %>
   </span>
 </li>
