@@ -11,7 +11,10 @@ class MicropostsController < ApplicationController
     else
       # 2024.06.10 kaminari対応
       #@feed_items = current_user.feed.paginate(page: params[:page])
-      @feed_items = current_user.feed.page(params[:page])
+      # 2024.06.10 検索対応対応
+      #@feed_items = current_user.feed.page(params[:page])
+      @q = Micropost.none.ransack
+      @feed_items = current_user.feed.page(params[:page]) 
       render 'static_pages/home', status: :unprocessable_entity
     end
   end

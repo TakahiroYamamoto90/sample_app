@@ -1,0 +1,12 @@
+ja:
+  activerecord:
+    models:
+      user: "ユーザー"
+    attributes:
+      user:
+        name: "名前"
+    models:
+      user: "Micropost"
+    attributes:
+      user:
+        content: "投稿内容"        
