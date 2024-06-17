@@ -89,6 +89,22 @@ class UsersIndexAdminTest < UsersIndexAdmin
       assert user.activated?
     end
   end
+
+  test "admin user search should hit active user" do
+    get users_path
+    q = User.ransack(name_cont: "Michael Example")
+    q.result.page(1).each do |user|
+      assert_match user.name, response.body
+    end    
+  end
+
+  test "admin user search should not hit active user" do
+    get users_path
+    q = User.ransack(name_cont: "Inactive User")
+    q.result.page(1).each do |user|
+      assert_no_match user.name, response.body
+    end    
+  end    
 end
 
 class UsersNonAdminIndexTest < UsersIndex
@@ -98,4 +114,22 @@ class UsersNonAdminIndexTest < UsersIndex
     get users_path
     assert_select 'a', text: 'delete', count: 0
   end
+
+  test "non-admin user search" do
+    log_in_as(@non_admin)
+    get users_path
+    q = User.ransack(name_cont: "Michael Example")
+    q.result.page(1).each do |user|
+      assert_match user.name, response.body
+    end    
+  end
+
+  test "non-admin user search should not hit active user" do
+    log_in_as(@non_admin)
+    get users_path
+    q = User.ransack(name_cont: "Inactive User")
+    q.result.page(1).each do |user|
+      assert_no_match user.name, response.body
+    end    
+  end    
 end

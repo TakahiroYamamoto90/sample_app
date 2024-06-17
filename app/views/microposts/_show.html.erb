@@ -13,3 +13,131 @@
   </span>
 </li>
 </ol>
+<label for="query_example">GenerativeAI(Gemini)への質問を選択してください：</label>
+<div class="input-group col-xs-5">
+  <select class="form-control form-select" size="6" aria-label="size 6" id="query_example">
+    <option value="詳しく知りたい" selected>詳しく知りたい</option>
+    <option value="ホットな話題が知りたい">ホットな話題が知りたい</option>
+    <option value="関連する情報を要約して欲しい">関連する情報を要約して欲しい</option>
+    <option value="論理的に正しいか確認したい">論理的に正しいか確認したい</option>
+    <option value="情報ソースが知りたい">情報ソースが知りたい</option>
+    <option value="ファクトチェックがしたい">ファクトチェックがしたい</option>
+  </select>
+  <span class="input-group-addon btn btn-primary" role="button" id="execute_query">
+    質問を送信する
+    <!--<button class="btn btn-primary" id="execute_query">質問する</button>-->
+  </span>
+</div>
+<!--
+<label for="query_answer">GenerativeAI(Gemini)からの回答：</label>
+<p><%= @generative_text %></p>
+-->
+<div class="container-fluid query_answer">
+	<div class="row">
+    <div class="col-lg-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          テキストについての回答
+        </div>
+        <div class="panel-body">
+          <p id="query_answer">
+            質問を送信すると回答が表示されます
+            <div class="loader text" id="loader-2">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          画像についての回答
+        </div>
+        <div class="panel-body">
+          <p id="query_answer_image">
+            質問を送信すると回答が表示されます
+            <div class="loader image" id="loader-2">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+  //$("#query_answer").text("jQuery稼働テスト(稼働中)");
+  //executeQuery()
+  $(".loader").hide();
+  $('#execute_query').on('click', function () {
+    executeQuery();
+  });
+
+  function executeQuery() {
+    $(".loader.text").show();
+    $("#query_answer").text("");
+
+    var query_text = $.trim("<%= @micropost.content %>");
+    var query_example_text = $.trim($("#query_example").val());
+    var param = {
+      //query_text: query_text, // テキストはDBから取得するため不要
+      query_example_text: query_example_text,
+      id: "<%= @micropost.id %>",
+      is_image_query: false
+    };
+    var paramEncoded = $.param(param);
+    $.ajax({
+      type: 'GET',
+      url: '/microposts/query',
+      data: paramEncoded,
+      dataType: 'json'
+    }).done(function (ajaxResult) {
+      console.log({ajaxResult});
+      if (ajaxResult.answer["candidates"]) {
+        let answer = ajaxResult.answer["candidates"][0]["content"]["parts"][0]["text"];
+        //let htmlFormattedAnswer = answer.replace(/(\*\* \* )/g, '\n<h3>');
+        $("#query_answer").text(answer);
+        $(".loader.text").hide();
+      } else {
+        $("#query_answer").text("Geminiから有効な回答を得られませんでした。");
+      }
+    });  
+  }
+
+  function executeImage() {
+    $(".loader.image").show();
+    $("#query_answer_image").text("");
+
+    var query_text = $.trim("<%= @micropost.content %>");
+    var query_example_text = $.trim($("#query_example").val());
+    var param = {
+      //query_text: query_text, // テキストはDBから取得するため不要
+      id: "<%= @micropost.id %>",
+      is_image_query: true      
+    };
+    var paramEncoded = $.param(param);
+    $.ajax({
+      type: 'GET',
+      url: '/microposts/query_image',
+      data: paramEncoded,
+      dataType: 'json'
+    }).done(function (ajaxResult) {
+      console.log({ajaxResult});
+      if (ajaxResult.answer["candidates"]) {
+        let answer = ajaxResult.answer["candidates"][0]["content"]["parts"][0]["text"];
+        $("#query_answer_image").text(answer);
+        $(".loader.image").hide();
+      } else {
+        $("#query_answer_image").text("Geminiから有効な回答を得られませんでした。");
+      }
+    });  
+  }
+
+});
+</script>

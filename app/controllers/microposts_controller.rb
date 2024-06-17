@@ -1,5 +1,5 @@
-# 2024.06.14 gemini-ai対応
-require 'gemini-ai'
+# 2024.06.14 gemini-ai対応 gemのrequireは基本不要
+#require 'gemini-ai'
 
 class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:show, :create, :destroy]
@@ -10,6 +10,8 @@ class MicropostsController < ApplicationController
   def show
     @micropost = Micropost.find(params[:id])
 
+=begin
+    # 2024.06.14 implement generative ai
     client = Gemini.new(
       credentials: {
         service: 'generative-language-api',
@@ -18,12 +20,18 @@ class MicropostsController < ApplicationController
       options: { model: 'gemini-pro', server_sent_events: true }
     )
 
+    query = @micropost.content + " について要約して教えてください。"
+    result = client.generate_content(
+      { contents: { role: 'user', parts: { text: query } } }
+    )
+    @generative_text = result["candidates"][0]["content"]["parts"][0]["text"]
+    # debugger
     respond_to do |format|
       format.html
       # link_toメソッドをremote: trueに設定したのでリクエストはjs形式で行われる
       format.js  # js形式で送信された場合はこちらが適応され、js.erbを探す
     end
-    #respond_to :html, :js  
+=end
   end
 
   def create

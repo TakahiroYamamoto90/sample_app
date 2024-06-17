@@ -26,6 +26,11 @@ Rails.application.routes.draw do
   #  end
   #end
   #post "/microposts/*", to: "microposts#show", format: "js"
+  # microposts/query へのルーティング行う
+  namespace :microposts do 
+    resources :query, only: :index, defaults: { format: :json }
+    #resources :query_image, only: :image, defaults: { format: :json }
+  end  
   resources :microposts,          only: [:show, :create, :destroy] # :showを付けないとmicropost/xxxを表示するshowメソッドが呼ばれない
   resources :relationships,       only: [:create, :destroy]
   resources :password_resets,     only: [:new, :create, :edit, :update]

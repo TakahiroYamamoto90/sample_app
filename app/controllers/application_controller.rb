@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include SessionsHelper
+  include QueryHelper # 2024.06.15 Queryヘルパを追加
   
   private
   
