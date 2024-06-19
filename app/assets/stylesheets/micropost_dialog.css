@@ -1,0 +1,36 @@
+/* 2024.06.11 add modal dialog */
+/*#mask、つまり背景の設定*/
+#mask {
+  background-color: rgba(0, 0, 0, 0.5);/*背景色の指定*/
+  position: fixed; /* スクロールで移動しないようmodalの位置を固定 */
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1; /*z-index を持つ要素はより小さな要素の上に重なる*/
+}
+
+#modal {
+  position: fixed;/* スクロールで移動しないようmodalの位置を固定 */
+  top: 20vh; /*上端からの距離の指定、今回は画面上から２０％の位置から配置*/
+  left: 0; /*左からの距離の指定*/
+  right: 0; /*右からの距離の指定*/
+  margin: 0 auto; /*上２つと合わせ中央に配置される*/
+  transform: translate(0, 0) scale(1); /*平行移動（translate）、拡大縮小（scale）の指定*/
+  transition: 0.2s; /*上記trancsformに要する時間、今回は0.2秒*/
+  z-index: 2; /*z-index を持つ要素はより小さな要素の上に重なる*/
+  width: 50vw; /*モーダルの幅の指定、今回はvwを用いて画面の50%幅でモーダルを作成*/
+  background-color: white; /*背景色*/
+  border-radius: 8px; /*角の処理、指定することで丸みを帯びる*/
+}
+
+#mask.hidden {
+  opacity: 0; /*透明度*/
+  visibility: hidden; /*視認性、最初は隠しておきたいのでhiddenを指定*/
+}
+
+#modal.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(0, 0) scale(0.8);
+}

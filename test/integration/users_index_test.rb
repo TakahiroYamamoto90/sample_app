@@ -52,11 +52,13 @@ class UsersIndexAdminTest < UsersIndexAdmin
   end
 
   test "should paginate users" do
-    assert_select 'div.pagination'
+    assert_select 'ul.pagination'
   end
 
   test "should have delete links" do
-    first_page_of_users = User.where(activated: true).paginate(page: 1)
+    # 2024.06.10 kaminari対応
+    #first_page_of_users = User.where(activated: true).paginate(page: 1)
+    first_page_of_users = User.where(activated: true).page(1)
     first_page_of_users.each do |user|
       assert_select 'a[href=?]', user_path(user), text: user.name
       unless user == @admin
@@ -77,7 +79,9 @@ class UsersIndexAdminTest < UsersIndexAdmin
     # ページにいる最初のユーザーを無効化する。
     # 無効なユーザーを作成するだけでは、
     # Railsで最初のページに表示される保証がないので不十分
-    User.paginate(page: 1).first.toggle!(:activated)
+    # 2024.06.10 kaminari対応
+    #User.paginate(page: 1).first.toggle!(:activated)
+    User.page(1).first.toggle!(:activated)
     # /usersを再度取得して、無効化済みのユーザーが表示されていないことを確かめる
     get users_path      
     # 表示されているすべてのユーザーが有効化済みであることを確かめる
@@ -85,6 +89,22 @@ class UsersIndexAdminTest < UsersIndexAdmin
       assert user.activated?
     end
   end
+
+  test "admin user search should hit active user" do
+    get users_path
+    q = User.ransack(name_cont: "Michael Example")
+    q.result.page(1).each do |user|
+      assert_match user.name, response.body
+    end    
+  end
+
+  test "admin user search should not hit active user" do
+    get users_path
+    q = User.ransack(name_cont: "Inactive User")
+    q.result.page(1).each do |user|
+      assert_no_match user.name, response.body
+    end    
+  end    
 end
 
 class UsersNonAdminIndexTest < UsersIndex
@@ -94,4 +114,22 @@ class UsersNonAdminIndexTest < UsersIndex
     get users_path
     assert_select 'a', text: 'delete', count: 0
   end
+
+  test "non-admin user search" do
+    log_in_as(@non_admin)
+    get users_path
+    q = User.ransack(name_cont: "Michael Example")
+    q.result.page(1).each do |user|
+      assert_match user.name, response.body
+    end    
+  end
+
+  test "non-admin user search should not hit active user" do
+    log_in_as(@non_admin)
+    get users_path
+    q = User.ransack(name_cont: "Inactive User")
+    q.result.page(1).each do |user|
+      assert_no_match user.name, response.body
+    end    
+  end    
 end

@@ -6,12 +6,29 @@ class UsersController < ApplicationController
 
   def index
     #@users = User.paginate(page: params[:page])
-    @users = User.where(activated: true).paginate(page: params[:page])
+    # 2024.06.10 kaminari対応    
+    #@users = User.where(activated: true).paginate(page: params[:page])
+    #@users = User.where(activated: true).page(params[:page])
+    # 2024.06.10 検索対応
+    @q = User.ransack(params[:q]) # 検索オブジェクト作成
+    @users = @q.result.where(activated: true).page(params[:page])
+    
   end  
 
   def show
     @user = User.find(params[:id])
-    @microposts = @user.microposts.paginate(page: params[:page])
+    # 2024.06.10 kaminari対応
+    #@microposts = @user.microposts.paginate(page: params[:page])
+    #@microposts = @user.microposts.page(params[:page])
+    # 2024.06.10 検索対応
+    if params[:q] && params[:q].reject { |key, value| value.blank? }.present?
+      @q = @user.microposts.ransack(microposts_search_params) # 検索オブジェクト作成
+      @microposts = @q.result.page(params[:page])
+    else
+      @q = Micropost.none.ransack
+      @microposts = @user.microposts.page(params[:page])
+    end
+    @url = user_path(@user)
     redirect_to root_url and return unless @user.activated?
     #debugger
   end
@@ -62,14 +79,18 @@ class UsersController < ApplicationController
   def following
     @title = "Following"
     @user  = User.find(params[:id])
-    @users = @user.following.paginate(page: params[:page])
+    # 2024.06.10 kaminari対応
+    #@users = @user.following.paginate(page: params[:page])
+    @users = @user.following.page(params[:page])
     render 'show_follow'
   end
 
   def followers
     @title = "Followers"
     @user  = User.find(params[:id])
-    @users = @user.followers.paginate(page: params[:page])
+    # 2024.06.10 kaminari対応
+    #@users = @user.followers.paginate(page: params[:page])
+    @users = @user.followers.page(params[:page])
     render 'show_follow'
   end  
 
@@ -77,7 +98,8 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation)#, :admin)
+                                   :password_confirmation,
+                                   :follow_notification)#, :admin)
     end
 
     # 親のapplication_controllerに移動

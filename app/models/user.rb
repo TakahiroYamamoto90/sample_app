@@ -116,27 +116,51 @@ class User < ApplicationRecord
   end
 
   # ユーザーのステータスフィードを返す
-  def feed
+  def feed_old
     following_ids = "SELECT followed_id FROM relationships
                      WHERE  follower_id = :user_id"
     Micropost.where("user_id IN (#{following_ids})
                      OR user_id = :user_id", user_id: id)
+             .includes(:user, image_attachment: :blob)
+  end
+
+  # ユーザーのステータスフィードを返す
+  def feed
+    part_of_feed = "relationships.follower_id = :id or microposts.user_id = :id"
+    Micropost.left_outer_joins(user: :followers)
+             .where(part_of_feed, { id: id }).distinct
              .includes(:user, image_attachment: :blob)
   end  
 
   # ユーザーをフォローする
   def follow(other_user)
     following << other_user unless self == other_user
+    if other_user.follow_notification
+      Relationship.send_follow_email(other_user, self)
+    end
   end
 
   # ユーザーをフォロー解除する
   def unfollow(other_user)
     following.delete(other_user)
+    if other_user.follow_notification
+      Relationship.send_unfollow_email(other_user, self)
+    end
   end
 
   # 現在のユーザーが他のユーザーをフォローしていればtrueを返す
   def following?(other_user)
     following.include?(other_user)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    # nameとemailは検索OKとする
+    auth_object ? super : %w(name email)
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    # 関連先のモデルを検索する必要がなければ空の配列を返す
+    auth_object ? super : []
   end  
 
   private
