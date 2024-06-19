@@ -1,16 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sample App</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= full_title(yield(:title)) %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <!-- javascript_importmap_tagsかどちらかを選ばないと 
+    javascript consoleでHotwire Rails - Cannot use import statement outside a module のエラーが発生する
+    <%= javascript_include_tag :application %>
+    -->
   </head>
-
   <body>
-    <%= yield %>
+    <%= render 'layouts/header' %>
+    <!--
+    <header class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <%= link_to "sample app", '#', id: "logo" %>
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to "Home",   '#' %></li>
+            <li><%= link_to "Help",   '#' %></li>
+            <li><%= link_to "Log in", '#' %></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    -->
+    <div class="container">
+      <!--
+      <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+      <% end %>
+      -->      
+      <% flash.each do |message_type, message| %>
+        <%= content_tag(:div, message, class: "alert alert-#{message_type}") %>
+      <% end %>      
+      <%= yield %>
+      <%= render 'layouts/footer' %>
+      <%= debug(params) if Rails.env.development? %>
+    </div>
   </body>
 </html>

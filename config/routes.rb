@@ -1,6 +1,38 @@
 Rails.application.routes.draw do
-  get 'static_pages/home'
-  get 'static_pages/help'
-  get  "static_pages/about"  
-  root "application#hello"
+  get 'password_resets/new'
+  get 'password_resets/edit'
+  #get 'sessions/new' # rails generate default routing set
+  #get 'users/new'
+  root "static_pages#home"
+  get    "/help",    to: "static_pages#help"
+  get    "/about",   to: "static_pages#about"
+  get    "/contact", to: "static_pages#contact"
+  get    "/signup", to: "users#new"
+  get    "/login",   to: "sessions#new"
+  post   "/login",   to: "sessions#create"
+  delete "/logout",  to: "sessions#destroy"
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end  
+  resources :users
+  resources :account_activations, only: [:edit]
+  #resources :password_resets,     only: [:new, :create, :edit, :update]
+  # 2024.06.12 feed検索が動作しなくなったので修正。POSTとRANSACKがバッティングしていると思われる
+  #resources :microposts do
+  #  member do
+  #    post :show
+  #  end
+  #end
+  #post "/microposts/*", to: "microposts#show", format: "js"
+  # microposts/query へのルーティング行う
+  namespace :microposts do 
+    resources :query, only: :index, defaults: { format: :json }
+    #resources :query_image, only: :image, defaults: { format: :json }
+  end  
+  resources :microposts,          only: [:show, :create, :destroy] # :showを付けないとmicropost/xxxを表示するshowメソッドが呼ばれない
+  resources :relationships,       only: [:create, :destroy]
+  resources :password_resets,     only: [:new, :create, :edit, :update]
+  get '/microposts', to: 'static_pages#home'
 end
